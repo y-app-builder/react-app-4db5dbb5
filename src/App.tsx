@@ -13,6 +13,7 @@ const App: React.FC = () => {
   });
   const [inputValue, setInputValue] = useState<string>('');
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [language, setLanguage] = useState<'english' | 'turkish'>('english');
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
@@ -54,9 +55,46 @@ const App: React.FC = () => {
 
   const activeTodosCount = todos.filter((todo) => !todo.completed).length;
 
+  const toggleLanguage = () => {
+    setLanguage(language === 'english' ? 'turkish' : 'english');
+  };
+
+  const translations = {
+    english: {
+      title: 'Todo List',
+      placeholder: 'What needs to be done?',
+      add: 'Add',
+      all: 'All',
+      active: 'Active',
+      completed: 'Completed',
+      itemsLeft: 'items left',
+      clearCompleted: 'Clear completed',
+      switchLanguage: 'Türkçe'
+    },
+    turkish: {
+      title: 'Yapılacaklar Listesi',
+      placeholder: 'Ne yapılması gerekiyor?',
+      add: 'Ekle',
+      all: 'Tümü',
+      active: 'Aktif',
+      completed: 'Tamamlanan',
+      itemsLeft: 'öğe kaldı',
+      clearCompleted: 'Tamamlananları temizle',
+      switchLanguage: 'English'
+    }
+  };
+
+  const t = translations[language];
+
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Todo List</h1>
+      <div style={styles.languageContainer}>
+        <button onClick={toggleLanguage} style={styles.languageButton}>
+          {t.switchLanguage}
+        </button>
+      </div>
+      
+      <h1 style={styles.title}>{t.title}</h1>
       
       <div style={styles.inputContainer}>
         <input
@@ -64,11 +102,11 @@ const App: React.FC = () => {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && addTodo()}
-          placeholder="What needs to be done?"
+          placeholder={t.placeholder}
           style={styles.input}
         />
         <button onClick={addTodo} style={styles.addButton}>
-          Add
+          {t.add}
         </button>
       </div>
       
@@ -82,7 +120,7 @@ const App: React.FC = () => {
                 ...(filter === 'all' ? styles.activeFilter : {})
               }}
             >
-              All
+              {t.all}
             </button>
             <button 
               onClick={() => setFilter('active')} 
@@ -91,7 +129,7 @@ const App: React.FC = () => {
                 ...(filter === 'active' ? styles.activeFilter : {})
               }}
             >
-              Active
+              {t.active}
             </button>
             <button 
               onClick={() => setFilter('completed')} 
@@ -100,7 +138,7 @@ const App: React.FC = () => {
                 ...(filter === 'completed' ? styles.activeFilter : {})
               }}
             >
-              Completed
+              {t.completed}
             </button>
           </div>
           
@@ -130,9 +168,9 @@ const App: React.FC = () => {
           </ul>
           
           <div style={styles.footer}>
-            <span>{activeTodosCount} items left</span>
+            <span>{activeTodosCount} {t.itemsLeft}</span>
             <button onClick={clearCompleted} style={styles.clearButton}>
-              Clear completed
+              {t.clearCompleted}
             </button>
           </div>
         </>
@@ -217,22 +255,4 @@ const styles = {
   },
   filterContainer: {
     display: 'flex',
-    justifyContent: 'center',
-    margin: '15px 0',
-  },
-  filterButton: {
-    backgroundColor: 'transparent',
-    border: '1px solid #ddd',
-    borderRadius: '3px',
-    margin: '0 5px',
-    padding: '3px 7px',
-    cursor: 'pointer',
-    fontSize: '14px',
-  },
-  activeFilter: {
-    border: '1px solid #4CAF50',
-    color: '#4CAF50',
-  },
-};
-
-export default App;
+    justifyContent: 
